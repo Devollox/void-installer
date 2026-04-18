@@ -1,19 +1,26 @@
-# README
+# Void Installer
 
-## About
+Modern, high-performance installer for **Void Presence** built with **Go (Wails)** and **React**.
 
-This is the official Wails React-TS template.
+## Features
+- **Seamless Setup**: Automatically fetches and unpacks the latest release from GitHub.
+- **Custom UI/UX**: A beautiful, translucent interface that matches the Void Presence aesthetic.
+- **Lightweight**: Zero dependencies, single executable file.
+- **System Friendly**: Handles file extraction, shortcuts, and auto-start configurations.
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+## Built With
+- [Go](https://go.dev) + [Wails](https://wails.io) (Backend & OS Integration)
+- [React](https://reactjs.org) + [TypeScript](https://typescriptlang.org) (Frontend)
+- [Tailwind CSS](https://tailwindcss.com) (Styling)
 
-## Live Development
+## Usage
+Simply download the latest `void-installer.exe` from the [Releases](https://github.com) page and run it.
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+## Author
+Made with ❤️ by [Devollox](https://github.com/Devollox)
 
-## Building
+<p align="left">
+  <img width="128" height="128" alt="Devollox Logo" src="https://github.com/user-attachments/assets/f5c3c406-552b-412e-a2a9-3ff0fdddf400" />
+</p>
 
-To build a redistributable, production mode package, use `wails build`.
+**Void Presence** – Control your Discord presence. Own your story.
