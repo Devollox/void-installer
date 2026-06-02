@@ -20,7 +20,7 @@ Simply download the latest `void-installer.exe` from the [Releases](https://gith
 Made with ❤️ by [Devollox](https://github.com/Devollox)
 
 <p align="left">
-  <img width="128" height="128" alt="Devollox Logo" src="https://github.com/user-attachments/assets/f5c3c406-552b-412e-a2a9-3ff0fdddf400" />
+  <img width="128" height="128" alt="выфвфы" src="https://github.com/user-attachments/assets/32b65183-a39c-4871-bb37-5fbe01ecaade" />
 </p>
 
 **Void Presence** – Control your Discord presence. Own your story.
