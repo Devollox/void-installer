@@ -132,7 +132,7 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.28);
+  background: radial-gradient(circle, #4ade80 0, #22c55e 50%, #000000 100%);
 }
 
 .dot-success {
