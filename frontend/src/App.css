@@ -241,6 +241,8 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
   padding: 12px 14px 10px;
   margin-bottom: 18px;
+  width: 100%;
+  position: fixed;
 }
 
 .soft-panel p {
@@ -264,6 +266,7 @@ body {
 }
 
 .segments-row {
+  margin-top: 100px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
