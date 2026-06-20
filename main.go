@@ -1,36 +1,48 @@
 package main
 
 import (
-	"embed"
+  "context"
+  "embed"
+  "log"
 
-	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+  "github.com/wailsapp/wails/v2"
+  "github.com/wailsapp/wails/v2/pkg/options"
+  "github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
-	// Create an instance of the app structure
-	app := NewApp()
+  defer func() {
+    if r := recover(); r != nil {
+      log.Printf("panic: %v", r)
+    }
+  }()
 
-	// Create application with options
-	err := wails.Run(&options.App{
-		Title:  "void-installer",
-		Width:  1024,
-		Height: 768,
-		AssetServer: &assetserver.Options{
-			Assets: assets,
-		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
-		Bind: []interface{}{
-			app,
-		},
-	})
+  app := NewApp()
+  installer := NewInstaller()
 
-	if err != nil {
-		println("Error:", err.Error())
-	}
+  err := wails.Run(&options.App{
+    Title:  "Void Presence Installer",
+    Width:  900,
+    Height: 520,
+    Frameless: true,
+    AssetServer: &assetserver.Options{
+      Assets: assets,
+    },
+    BackgroundColour: &options.RGBA{R: 5, G: 5, B: 5, A: 1},
+    OnStartup: func(ctx context.Context) {
+      app.startup(ctx)
+      installer.Startup(ctx)
+    },
+    Bind: []interface{}{
+      app,
+      installer,
+    },
+  })
+
+  if err != nil {
+    log.Printf("wails error: %v", err)
+  }
 }
