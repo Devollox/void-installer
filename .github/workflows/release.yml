@@ -54,7 +54,7 @@ jobs:
       - name: Build Wails app (Windows)
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          wails build -clean -platform windows/amd64 -verbose
+          wails build -clean -platform windows/amd64
 
       - name: Upload Release
         if: steps.check_release.outputs.exists == 'false'
