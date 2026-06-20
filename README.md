@@ -19,7 +19,7 @@ Modern, high-performance installer for **Void Presence** built with **Go (Wails)
 
 ## Usage
 
-Simply download the latest `void-installer.exe` from the [Releases](https://github.com) page and run it.
+Simply download the latest `Void Presence Installer.exe` from the [Releases](https://github.com/Devollox/void-installer/releases) page and run it.
 
 ## Author
 
