@@ -5,6 +5,10 @@ import (
   "embed"
   "log"
 
+  "local/void-installer/internal/installer"
+  "local/void-installer/internal/installer_paths"
+  "local/void-installer/internal/updates"
+
   "github.com/wailsapp/wails/v2"
   "github.com/wailsapp/wails/v2/pkg/options"
   "github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -21,8 +25,9 @@ func main() {
   }()
 
   app := NewApp()
-  installer := NewInstaller()
-  updates := NewUpdates()
+  inst := installer.NewInstaller()
+  ups := updates.NewUpdates()
+  paths := installer_paths.NewPaths()
 
   err := wails.Run(&options.App{
     Title:  "Void Presence Installer",
@@ -36,12 +41,14 @@ func main() {
     BackgroundColour: &options.RGBA{R: 5, G: 5, B: 5, A: 1},
     OnStartup: func(ctx context.Context) {
       app.startup(ctx)
-      installer.Startup(ctx)
+      inst.Startup(ctx)
+      paths.Startup(ctx)
     },
     Bind: []interface{}{
       app,
-      installer,
-      updates,
+      inst,
+      ups,
+      paths,
     },
   })
 

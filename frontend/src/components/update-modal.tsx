@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { UpdateInfo } from '../hooks/use-installer'
 
 interface UpdateModalProps {
@@ -20,6 +21,22 @@ export function UpdateModal(props: UpdateModalProps) {
 		setIsUpdateModalOpen,
 		runUpdateInstallFlow,
 	} = props
+
+	useEffect(() => {
+		if (!isOpen) return
+
+		const onKeyDown = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') {
+				e.preventDefault()
+				setIsUpdateModalOpen(false)
+			}
+		}
+
+		window.addEventListener('keydown', onKeyDown)
+		return () => {
+			window.removeEventListener('keydown', onKeyDown)
+		}
+	}, [isOpen, setIsUpdateModalOpen])
 
 	return (
 		<div id='update-overlay' data-open={overlayOpenAttr}>

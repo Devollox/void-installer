@@ -1,4 +1,4 @@
-import { InstallState, Mode, REMOVE_PATH } from '../hooks/use-installer'
+import { InstallState, Mode } from '../hooks/use-installer'
 
 interface ModeSelectorProps {
 	mode: Mode
@@ -11,6 +11,7 @@ interface ModeSelectorProps {
 		currentVersion: string
 		latestVersion: string
 	} | null
+	removePath: string
 	setModeInstall: () => void
 	setModeRemove: () => void
 }
@@ -24,6 +25,7 @@ export function ModeSelector(props: ModeSelectorProps) {
 		removeStatus,
 		hasUpdate,
 		updateInfo,
+		removePath,
 		setModeInstall,
 		setModeRemove,
 	} = props
@@ -32,7 +34,7 @@ export function ModeSelector(props: ModeSelectorProps) {
 		<>
 			<div className='soft-panel'>
 				<p className='meta'>
-					Install path: <span className='mono'>{REMOVE_PATH}</span>
+					Install path: <span className='mono'>{removePath}</span>
 				</p>
 				{mode === 'install' && downloadPath && (
 					<p className='meta meta-remove'>

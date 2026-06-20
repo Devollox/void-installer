@@ -33,6 +33,7 @@ function App() {
 										}
 									: null
 							}
+							removePath={state.removePath}
 							setModeInstall={state.setModeInstall}
 							setModeRemove={state.setModeRemove}
 						/>

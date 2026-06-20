@@ -1,4 +1,4 @@
-package main
+package updates
 
 import (
   "encoding/json"
@@ -31,7 +31,7 @@ type UpdateInfo struct {
 
 const (
   githubLatestURL = "https://api.github.com/repos/void-presence/void-installer/releases/latest"
-  currentVersion  = "v1.0.4"
+  currentVersion  = "v1.1.0"
 )
 
 type Updates struct{}

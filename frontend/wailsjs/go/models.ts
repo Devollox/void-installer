@@ -1,4 +1,4 @@
-export namespace main {
+export namespace installer {
 	
 	export class DownloadResult {
 	    path: string;
@@ -12,6 +12,42 @@ export namespace main {
 	        this.path = source["path"];
 	    }
 	}
+	export class LatestReleaseInfo {
+	    tag: string;
+	    assetName: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new LatestReleaseInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.tag = source["tag"];
+	        this.assetName = source["assetName"];
+	    }
+	}
+
+}
+
+export namespace installer_paths {
+	
+	export class InstallPathInfo {
+	    installPath: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new InstallPathInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.installPath = source["installPath"];
+	    }
+	}
+
+}
+
+export namespace updates {
+	
 	export class GitHubAsset {
 	    name: string;
 	    browser_download_url: string;
@@ -57,20 +93,6 @@ export namespace main {
 		    }
 		    return a;
 		}
-	}
-	export class LatestReleaseInfo {
-	    tag: string;
-	    assetName: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new LatestReleaseInfo(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.tag = source["tag"];
-	        this.assetName = source["assetName"];
-	    }
 	}
 	export class UpdateInfo {
 	    hasUpdate: boolean;

@@ -1,4 +1,4 @@
-module void-installer
+module local/void-installer
 
 go 1.23.0
 

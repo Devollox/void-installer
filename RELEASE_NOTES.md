@@ -1,15 +1,22 @@
-# Components & UI Structure & Auto‑Updates
+# Dynamic Paths, Safer Remove & Modal UX
 
 ## New features
 
-- **Built‑in installer auto‑update** — on startup, the installer now checks the latest `void-installer` release on GitHub and compares it with its current version.
-- **Update modal for new versions** — when a newer installer is available, a dedicated modal shows the current and latest versions, the installer asset name, and a clear primary action.
-- **“Download and install” handoff flow** — clicking **Download and install** downloads the new installer `.exe` to the system temp directory, launches it, and then cleanly exits the current instance so only the new installer remains running.
+- **Esc‑to‑close update modal** — the update dialog can now be dismissed with the Escape key, in addition to the “Back to installer” action.
 
 ## Improvements
 
-- **Centralized installer logic hook** — a `useInstaller` hook now owns installer and updater state (`mode`, `installState`, `statusLabel`, `progress`, `updateInfo`), subscriptions to `download:progress`, and orchestration of `DownloadInstaller`, `RunNsis`, and `RunInstallerUpdater`.
-- **Header component** — renders the frameless window header with branding, a live status chip, and minimize/close controls.
-- **Mode selector component** — manages the Install/Remove segmented buttons and displays install path, download path, and update availability inline.
-- **Progress panel component** — shows the resolved release tag, refresh control, progress bar and percentage, and the main Install/Remove action button with correct disabled states.
-- **Update modal component** — encapsulates the full‑screen overlay for installer updates, including version comparison, installer file details, a “Back to installer” action, and the primary **Download and install** button.
+- **Dynamic install path resolution** — the installer no longer relies on a hard‑coded `C:\Users\...\voidpresence` path and instead resolves the install directory at runtime in Go and passes it to the frontend.
+
+## Bug Fixes
+
+- **Fixed hard‑coded install path usage** — Remove flow and status messaging now use the resolved install path instead of a user‑specific hard‑coded value.
+- **Fixed incorrect state after failed operations** — failed installs and updates now reset to an idle state, allowing another attempt without restarting the installer.
+- **Fixed missing bindings after refactor** — internal Go packages for installer, updates, and paths are now correctly bound so TypeScript bindings generate as expected.
+- **Safer update modal behavior** — the update modal correctly respects disabled states during long‑running update operations and avoids conflicting actions.
+
+## Internal
+
+- **Structured backend packages** — backend logic is now organized into `internal/installer`, `internal/updates`, and `internal/installer_paths` for clearer separation of responsibilities.
+- **Process‑safe removal flow** — the Remove handler now attempts to terminate running `Void Presence.exe` processes before starting `Uninstall Void Presence.exe`, reducing the chance of uninstall conflicts.
+- **Cleaner public API surface** — only the required methods for install, update, path resolution, and removal are exported and bound to the frontend.

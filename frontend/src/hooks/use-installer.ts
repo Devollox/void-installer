@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import {
 	DownloadInstaller,
 	GetLatestRelease,
+	RemoveVoidPresence,
 	RunInstallerUpdater,
 	RunNsis,
-} from '../../wailsjs/go/main/Installer'
-import { CheckInstallerUpdate } from '../../wailsjs/go/main/Updates'
+} from '../../wailsjs/go/installer/Installer'
+import { GetInstallPath } from '../../wailsjs/go/installer_paths/Paths'
+import { CheckInstallerUpdate } from '../../wailsjs/go/updates/Updates'
 import { EventsOn } from '../../wailsjs/runtime/runtime'
 
 export type InstallState = 'idle' | 'running' | 'done'
@@ -24,9 +26,6 @@ export interface UpdateInfo {
 	assetUrl: string
 }
 
-export const REMOVE_PATH =
-	'C:\\Users\\Devollox\\AppData\\Local\\Programs\\voidpresence'
-
 export function useInstaller() {
 	const [installState, setInstallState] = useState<InstallState>('idle')
 	const [mode, setMode] = useState<Mode>('install')
@@ -43,6 +42,7 @@ export function useInstaller() {
 	const [isCheckingUpdate, setIsCheckingUpdate] = useState(false)
 	const [isInstallingUpdate, setIsInstallingUpdate] = useState(false)
 	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+	const [removePath, setRemovePath] = useState<string>('Detecting…')
 
 	useEffect(() => {
 		const off = EventsOn('download:progress', (data: any) => {
@@ -50,7 +50,7 @@ export function useInstaller() {
 			if (!isNaN(value)) {
 				setProgress(value)
 				if (value < 100) {
-					setProgressLabel('Downloading installer…')
+					setProgressLabel('Downloading application…')
 				} else {
 					setProgressLabel('Download completed')
 				}
@@ -102,9 +102,19 @@ export function useInstaller() {
 		}
 	}
 
+	const fetchInstallPath = async () => {
+		try {
+			const info = await GetInstallPath()
+			setRemovePath(info.installPath || 'Unknown path')
+		} catch {
+			setRemovePath('Unknown path')
+		}
+	}
+
 	useEffect(() => {
 		fetchLatest()
 		fetchUpdateInfo()
+		fetchInstallPath()
 	}, [])
 
 	const setModeInstall = () => {
@@ -170,8 +180,18 @@ export function useInstaller() {
 
 	const runRemoveFlow = async () => {
 		if (installState === 'running') return
-		setRemoveStatus(`Expected uninstall from: ${REMOVE_PATH}`)
-		setStatusLabel('ready')
+
+		setStatusLabel('installing')
+		setProgressLabel('Starting remove…')
+
+		try {
+			await RemoveVoidPresence(removePath)
+			setRemoveStatus(`Uninstall completed from: ${removePath}`)
+			setStatusLabel('completed')
+		} catch {
+			setRemoveStatus(`Failed to uninstall from: ${removePath}`)
+			setStatusLabel('error')
+		}
 	}
 
 	const handleNextClick = () => {
@@ -185,6 +205,7 @@ export function useInstaller() {
 	const handleRefreshClick = () => {
 		fetchLatest()
 		fetchUpdateInfo()
+		fetchInstallPath()
 	}
 
 	const statusDotClass =
@@ -232,5 +253,6 @@ export function useInstaller() {
 		handleRefreshClick,
 		runUpdateInstallFlow,
 		setIsUpdateModalOpen,
+		removePath,
 	}
 }

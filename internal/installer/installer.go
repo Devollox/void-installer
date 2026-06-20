@@ -1,4 +1,4 @@
-package main
+package installer
 
 import (
   "context"
@@ -109,7 +109,7 @@ func (i *Installer) DownloadInstaller(url string) (*DownloadResult, error) {
   }
 
   tmpDir := os.TempDir()
-  destPath := filepath.Join(tmpDir, "Void.Presence.Setup.test.exe")
+  destPath := filepath.Join(tmpDir, "Void.Presence.Setup.exe")
 
   out, err := os.Create(destPath)
   if err != nil {
@@ -196,4 +196,21 @@ func (i *Installer) RunInstallerUpdater(path string) error {
   }()
 
   return nil
+}
+
+func (i *Installer) RemoveVoidPresence(path string) error {
+  if path == "" {
+    return errors.New("empty install path")
+  }
+
+  kill := exec.Command("taskkill", "/IM", "Void Presence.exe", "/T", "/F")
+  _ = kill.Run()
+
+  uninstallPath := filepath.Join(path, "Uninstall Void Presence.exe")
+  if _, err := os.Stat(uninstallPath); err != nil {
+    return err
+  }
+
+  cmd := exec.Command(uninstallPath, "/S")
+  return cmd.Run()
 }
