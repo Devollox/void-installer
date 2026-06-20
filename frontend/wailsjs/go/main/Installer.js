@@ -10,6 +10,10 @@ export function GetLatestRelease() {
   return window['go']['main']['Installer']['GetLatestRelease']();
 }
 
+export function RunInstallerUpdater(arg1) {
+  return window['go']['main']['Installer']['RunInstallerUpdater'](arg1);
+}
+
 export function RunNsis(arg1) {
   return window['go']['main']['Installer']['RunNsis'](arg1);
 }

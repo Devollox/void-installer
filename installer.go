@@ -180,3 +180,20 @@ func (i *Installer) RunNsis(path string) error {
 
   return exec.Command(appPath).Start()
 }
+
+func (i *Installer) RunInstallerUpdater(path string) error {
+  if path == "" {
+    return errors.New("empty path")
+  }
+
+  cmd := exec.Command(path)
+  if err := cmd.Start(); err != nil {
+    return err
+  }
+
+  go func() {
+    runtime.Quit(i.ctx)
+  }()
+
+  return nil
+}

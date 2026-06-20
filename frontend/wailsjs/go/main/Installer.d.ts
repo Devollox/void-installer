@@ -7,6 +7,8 @@ export function DownloadInstaller(arg1:string):Promise<main.DownloadResult>;
 
 export function GetLatestRelease():Promise<main.LatestReleaseInfo>;
 
+export function RunInstallerUpdater(arg1:string):Promise<void>;
+
 export function RunNsis(arg1:string):Promise<void>;
 
 export function Startup(arg1:context.Context):Promise<void>;

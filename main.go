@@ -22,6 +22,7 @@ func main() {
 
   app := NewApp()
   installer := NewInstaller()
+  updates := NewUpdates()
 
   err := wails.Run(&options.App{
     Title:  "Void Presence Installer",
@@ -40,6 +41,7 @@ func main() {
     Bind: []interface{}{
       app,
       installer,
+      updates,
     },
   })
 
