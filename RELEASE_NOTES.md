@@ -2,9 +2,10 @@
 
 ## Improvements
 
-- **Polished header panel layout** — the soft top panel is now fixed to the top of the window, keeping key controls and status always visible while you scroll through the installer content.
-- **Better spacing for main sections** — content blocks below the header were slightly shifted down and re-aligned so that adding or changing controls in the panel no longer causes visible jumps in the layout.
+- **Adjusted installer window size** — updated the default window to a more compact 680×472 layout for a tighter, more focused installer experience.
+- **Refined top spacing for main sections** — tuned the `.segments-row` top margin to 80px so the primary action blocks sit at a more balanced distance below the header panel.
+- **Fixed header panel width** — the soft top panel now uses an explicit 607px width instead of 100%, so it no longer overflows the window when positioned as a fixed element.
 
 ## Bug Fixes
 
-- **Reduced layout shifts on updates** — when panel content is updated (e.g. new buttons or status labels), the main grid stays visually stable instead of being pushed around by height changes.
+- **Prevented unintended window resizing** — the installer window can no longer be resized, which keeps the layout stable and prevents visual distortions on different screen sizes.

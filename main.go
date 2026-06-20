@@ -25,9 +25,10 @@ func main() {
 
   err := wails.Run(&options.App{
     Title:  "Void Presence Installer",
-    Width:  900,
-    Height: 520,
+    Width:  680,
+    Height: 472,
     Frameless: true,
+		DisableResize: true,
     AssetServer: &assetserver.Options{
       Assets: assets,
     },

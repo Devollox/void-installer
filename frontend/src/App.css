@@ -191,7 +191,6 @@ body {
 .installer-main {
   flex: 1;
   min-height: 0;
-  padding-top: 6px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0;
@@ -241,7 +240,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
   padding: 12px 14px 10px;
   margin-bottom: 18px;
-  width: 100%;
+  width: 607px;
   position: fixed;
 }
 
@@ -266,7 +265,7 @@ body {
 }
 
 .segments-row {
-  margin-top: 100px;
+  margin-top: 80px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
