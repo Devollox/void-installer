@@ -37,19 +37,13 @@ export function ProgressPanel(props: ProgressPanelProps) {
 					<input
 						className='mono'
 						readOnly
-						value={
-							releaseVersion === 'Detecting…'
-								? 'Detecting latest…'
-								: releaseVersion
-						}
+						value={releaseVersion === 'Detecting…' ? 'Detecting latest…' : releaseVersion}
 					/>
 					<button
 						className='ghost-btn'
 						type='button'
 						onClick={handleRefreshClick}
-						disabled={
-							isFetching || installState === 'running' || isInstallingUpdate
-						}
+						disabled={isFetching || installState === 'running' || isInstallingUpdate}
 					>
 						↻
 					</button>
@@ -58,9 +52,7 @@ export function ProgressPanel(props: ProgressPanelProps) {
 
 			<div className='progress-block'>
 				<div className='progress-header'>
-					<span>
-						{mode === 'install' ? 'install progress' : 'remove progress'}
-					</span>
+					<span>{mode === 'install' ? 'install progress' : 'remove progress'}</span>
 					<span className='progress-percent'>
 						{mode === 'install' || isInstallingUpdate ? `${progress}%` : '--'}
 					</span>
@@ -69,17 +61,12 @@ export function ProgressPanel(props: ProgressPanelProps) {
 					<div
 						className='progress-fill'
 						style={{
-							width:
-								mode === 'install' || isInstallingUpdate
-									? `${progress}%`
-									: '0%',
+							width: mode === 'install' || isInstallingUpdate ? `${progress}%` : '0%',
 						}}
 					/>
 				</div>
 				<div className='progress-label'>
-					{mode === 'install' || isInstallingUpdate
-						? progressLabel
-						: removeStatus}
+					{mode === 'install' || isInstallingUpdate ? progressLabel : removeStatus}
 				</div>
 			</div>
 

@@ -38,8 +38,7 @@ export function ModeSelector(props: ModeSelectorProps) {
 				</p>
 				{mode === 'install' && downloadPath && (
 					<p className='meta meta-remove'>
-						Installer downloaded to:{' '}
-						<span className='mono'>{downloadPath}</span>
+						Installer downloaded to: <span className='mono'>{downloadPath}</span>
 					</p>
 				)}
 				{mode === 'remove' && removeStatus !== 'Idle' && (
@@ -59,8 +58,7 @@ export function ModeSelector(props: ModeSelectorProps) {
 				<button
 					type='button'
 					className={
-						'segment-btn segment-btn-large ' +
-						(mode === 'install' ? 'segment-btn-active' : '')
+						'segment-btn segment-btn-large ' + (mode === 'install' ? 'segment-btn-active' : '')
 					}
 					onClick={setModeInstall}
 					disabled={installState === 'running' || isInstallingUpdate}

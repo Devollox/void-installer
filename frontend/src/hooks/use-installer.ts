@@ -218,11 +218,7 @@ export function useInstaller() {
 					: 'status-dot'
 
 	const nextButtonLabel =
-		mode === 'install'
-			? installState === 'running'
-				? 'Installing…'
-				: 'Install'
-			: 'Remove'
+		mode === 'install' ? (installState === 'running' ? 'Installing…' : 'Install') : 'Remove'
 
 	const hasUpdate = !!updateInfo && updateInfo.hasUpdate
 	const overlayOpenAttr = isUpdateModalOpen ? 'true' : 'false'

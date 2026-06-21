@@ -68,9 +68,7 @@ export function UpdateModal(props: UpdateModalProps) {
 							<div className='card update-card'>
 								<div className='card-header update-card-header'>
 									<div>
-										<div className='card-title update-title'>
-											New version available Installer
-										</div>
+										<div className='card-title update-title'>New version available Installer</div>
 									</div>
 								</div>
 
@@ -114,16 +112,10 @@ export function UpdateModal(props: UpdateModalProps) {
 												className='next-btn'
 												onClick={runUpdateInstallFlow}
 												disabled={
-													isInstallingUpdate ||
-													!updateInfo?.assetUrl ||
-													installState === 'running'
+													isInstallingUpdate || !updateInfo?.assetUrl || installState === 'running'
 												}
 											>
-												<span>
-													{isInstallingUpdate
-														? 'Updating…'
-														: 'Download and install'}
-												</span>
+												<span>{isInstallingUpdate ? 'Updating…' : 'Download and install'}</span>
 											</button>
 										</div>
 									</div>

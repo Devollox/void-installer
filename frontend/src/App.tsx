@@ -11,10 +11,7 @@ function App() {
 	return (
 		<div className='AppRoot'>
 			<div className='installer-shell'>
-				<Header
-					statusLabel={state.statusLabel}
-					statusDotClass={state.statusDotClass}
-				/>
+				<Header statusLabel={state.statusLabel} statusDotClass={state.statusDotClass} />
 
 				<div className='installer-main'>
 					<div className='left-pane'>

@@ -1,5 +1,6 @@
-# GitHub Release Source Update
+# Refactored Components & UI Selected
 
-## Changes
+## Improvements
 
-- **Updated installer release source** — the auto‑update check for the installer now uses the latest release from the new GitHub repository instead of the previous `Devollox/void-installer` origin.
+- **Added custom text selection styling** — improved visibility and aesthetics for selected text.
+- **Refactored `.prettierrc`** — cleaned up formatting rules and improved consistency across the codebase.

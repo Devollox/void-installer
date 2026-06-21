@@ -33,13 +33,7 @@ export function Header({ statusLabel, statusDotClass }: HeaderProps) {
 								fill='none'
 								xmlns='http://www.w3.org/2000/svg'
 							>
-								<line
-									y1='0.5'
-									x2='10'
-									y2='0.5'
-									stroke='currentColor'
-									strokeWidth='1'
-								/>
+								<line y1='0.5' x2='10' y2='0.5' stroke='currentColor' strokeWidth='1' />
 							</svg>
 						</button>
 						<button
