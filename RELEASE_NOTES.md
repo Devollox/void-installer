@@ -2,6 +2,6 @@
 
 ## Improvements
 
-- **Added install progress events** — frontend now tracks installation progress in real time after the download finishes.
-- **Clearer status transitions** — the UI now shows `Running installer…` and `Starting application…` while NSIS is doing the actual install.
-- **Better user feedback** — the progress label updates without resetting the bar, so it’s obvious that the process is still continuing.
+- **Refined installer label styling** — the `.brand-installer-tag` is now smaller, uppercase, and spaced out for a cleaner eyebrow-style label above the heading.
+- **Improved visual hierarchy** — the label now feels lighter and less dominant, so the main title stays the focus.
+- **Better dark-theme balance** — the softer text color keeps the tag readable without drawing too much attention.

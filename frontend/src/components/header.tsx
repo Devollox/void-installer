@@ -9,8 +9,12 @@ export function Header({ statusLabel, statusDotClass }: HeaderProps) {
 	return (
 		<div className='header-row'>
 			<div className='header-content'>
-				<div className='header-brand'>
-					<span className='brand-installer-tag'>Void Presence</span>
+				<div className='brand-inline'>
+					<div className='brand-logo'>vP</div>
+					<div className='brand-text'>
+						<div className='brand-main'>VOID</div>
+						<div className='brand-sub'>PRESENCE</div>
+					</div>
 				</div>
 
 				<div className='header-right-side'>
