@@ -45,7 +45,8 @@ func (i *Installer) GetLatestRelease() (*LatestReleaseInfo, error) {
   defer resp.Body.Close()
 
   if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-    return nil, errors.New("bad status: " + resp.Status)
+    b, _ := io.ReadAll(resp.Body)
+    return nil, errors.New("bad status: " + resp.Status + " body: " + string(b))
   }
 
   type asset struct {

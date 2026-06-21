@@ -12,12 +12,7 @@ export function Header({ statusLabel, statusDotClass }: HeaderProps) {
 				<div className='header-brand'>
 					<span className='brand-installer-tag'>Void Presence</span>
 				</div>
-				<div className='header-center'>
-					<div className='status-chip'>
-						<div className={statusDotClass}></div>
-						<span>{statusLabel}</span>
-					</div>
-				</div>
+
 				<div className='header-right-side'>
 					<div className='window-controls'>
 						<button

@@ -3,6 +3,7 @@ import { Header } from './components/header'
 import { ModeSelector } from './components/mode-selector'
 import { ProgressPanel } from './components/progress-panel'
 import { UpdateModal } from './components/update-modal'
+import { Version } from './components/version'
 import { useInstaller } from './hooks/use-installer'
 
 function App() {
@@ -15,6 +16,20 @@ function App() {
 
 				<div className='installer-main'>
 					<div className='left-pane'>
+						<Version
+							mode={state.mode}
+							isInstallingUpdate={state.isInstallingUpdate}
+							progress={state.progress}
+							progressLabel={state.progressLabel}
+							removeStatus={state.removeStatus}
+							releaseVersion={state.releaseVersion}
+							isFetching={state.isFetching}
+							installState={state.installState}
+							handleRefreshClick={state.handleRefreshClick}
+							nextButtonLabel={state.nextButtonLabel}
+							handleNextClick={state.handleNextClick}
+						/>
+
 						<ModeSelector
 							mode={state.mode}
 							installState={state.installState}

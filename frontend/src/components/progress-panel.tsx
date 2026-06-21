@@ -21,54 +21,33 @@ export function ProgressPanel(props: ProgressPanelProps) {
 		progress,
 		progressLabel,
 		removeStatus,
-		releaseVersion,
-		isFetching,
 		installState,
-		handleRefreshClick,
 		nextButtonLabel,
 		handleNextClick,
 	} = props
 
-	return (
-		<div>
-			<div className='release-row'>
-				<div className='field-label'>release</div>
-				<div className='field-input-row'>
-					<input
-						className='mono'
-						readOnly
-						value={releaseVersion === 'Detecting…' ? 'Detecting latest…' : releaseVersion}
-					/>
-					<button
-						className='ghost-btn'
-						type='button'
-						onClick={handleRefreshClick}
-						disabled={isFetching || installState === 'running' || isInstallingUpdate}
-					>
-						↻
-					</button>
-				</div>
-			</div>
+	const isInstallingApp = mode === 'install' && installState === 'running'
+	const showInstallProgress = isInstallingApp || isInstallingUpdate
 
-			<div className='progress-block'>
-				<div className='progress-header'>
-					<span>{mode === 'install' ? 'install progress' : 'remove progress'}</span>
-					<span className='progress-percent'>
-						{mode === 'install' || isInstallingUpdate ? `${progress}%` : '--'}
-					</span>
+	return (
+		<div className='wrapper-block-progress'>
+			{showInstallProgress && (
+				<div className='progress-block'>
+					<div className='progress-header'>
+						<span>install progress</span>
+						<span className='progress-percent'>{`${progress}%`}</span>
+					</div>
+					<div className='progress-bar'>
+						<div
+							className='progress-fill'
+							style={{
+								width: `${progress}%`,
+							}}
+						/>
+					</div>
+					<div className='progress-label'>{progressLabel}</div>
 				</div>
-				<div className='progress-bar'>
-					<div
-						className='progress-fill'
-						style={{
-							width: mode === 'install' || isInstallingUpdate ? `${progress}%` : '0%',
-						}}
-					/>
-				</div>
-				<div className='progress-label'>
-					{mode === 'install' || isInstallingUpdate ? progressLabel : removeStatus}
-				</div>
-			</div>
+			)}
 
 			<div className='footer-row'>
 				<button

@@ -30,55 +30,36 @@ export function ModeSelector(props: ModeSelectorProps) {
 		setModeRemove,
 	} = props
 
-	return (
-		<>
-			<div className='soft-panel'>
-				<p className='meta'>
-					Install path: <span className='mono'>{removePath}</span>
-				</p>
-				{mode === 'install' && downloadPath && (
-					<p className='meta meta-remove'>
-						Installer downloaded to: <span className='mono'>{downloadPath}</span>
-					</p>
-				)}
-				{mode === 'remove' && removeStatus !== 'Idle' && (
-					<p className='meta meta-remove'>{removeStatus}</p>
-				)}
-				{hasUpdate && (
-					<p className='meta meta-remove'>
-						Update available:{' '}
-						<span className='mono'>
-							{updateInfo?.currentVersion} → {updateInfo?.latestVersion}
-						</span>
-					</p>
-				)}
-			</div>
+	const disabled = installState === 'running' || isInstallingUpdate
 
-			<div className='segments-row segments-row-centered'>
+	return (
+		<div className='hb-main-row'>
+			<div className='hb-mode-grid'>
 				<button
 					type='button'
-					className={
-						'segment-btn segment-btn-large ' + (mode === 'install' ? 'segment-btn-active' : '')
-					}
 					onClick={setModeInstall}
-					disabled={installState === 'running' || isInstallingUpdate}
+					disabled={disabled}
+					className={
+						'hb-mode-card ' + (mode === 'install' ? 'hb-mode-card_active' : 'hb-mode-card_idle')
+					}
 				>
-					<span>Install</span>
-					<span className='segment-sub'>Download and run latest installer</span>
+					<div className='hb-mode-title'>Install</div>
+					<div className='hb-mode-sub'>Integrate Void Presence into your Discord client.</div>
 				</button>
+
 				<button
 					type='button'
-					className={
-						'segment-btn segment-btn-large segment-btn-danger ' +
-						(mode === 'remove' ? 'segment-btn-active' : '')
-					}
 					onClick={setModeRemove}
-					disabled={installState === 'running' || isInstallingUpdate}
+					disabled={disabled}
+					className={
+						'hb-mode-card ' +
+						(mode === 'remove' ? 'hb-mode-card_active hb-mode-card_danger' : 'hb-mode-card_idle')
+					}
 				>
-					<span>Remove</span>
-					<span className='segment-sub'>Remove existing Void Presence</span>
+					<div className='hb-mode-title'>Remove</div>
+					<div className='hb-mode-sub'>Selectively uninstall Void Presence.</div>
 				</button>
 			</div>
-		</>
+		</div>
 	)
 }

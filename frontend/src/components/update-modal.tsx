@@ -115,7 +115,7 @@ export function UpdateModal(props: UpdateModalProps) {
 													isInstallingUpdate || !updateInfo?.assetUrl || installState === 'running'
 												}
 											>
-												<span>{isInstallingUpdate ? 'Updating…' : 'Download and install'}</span>
+												<span>{isInstallingUpdate ? 'Updating…' : 'Download'}</span>
 											</button>
 										</div>
 									</div>
