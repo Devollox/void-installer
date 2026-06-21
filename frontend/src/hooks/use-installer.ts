@@ -45,7 +45,7 @@ export function useInstaller() {
 	const [removePath, setRemovePath] = useState<string>('Detecting…')
 
 	useEffect(() => {
-		const off = EventsOn('download:progress', (data: any) => {
+		const offDownload = EventsOn('download:progress', (data: any) => {
 			const value = typeof data === 'number' ? data : parseInt(String(data), 10)
 			if (!isNaN(value)) {
 				setProgress(value)
@@ -56,8 +56,16 @@ export function useInstaller() {
 				}
 			}
 		})
+
+		const offInstall = EventsOn('install:progress', (data: any) => {
+			if (typeof data === 'string' && data.trim().length > 0) {
+				setProgressLabel(data)
+			}
+		})
+
 		return () => {
-			off()
+			offDownload()
+			offInstall()
 		}
 	}, [])
 

@@ -1,7 +1,7 @@
-# Refactored Installer UI
+# Installer UX Improvements
 
 ## Improvements
 
-- **Updated installer layout** — simplified the main screen structure and improved visual hierarchy of header, release info, mode selection, and progress.
-- **Refined buttons and cards** — unified styling for primary actions and mode cards for a cleaner and more consistent look.
-- **Polished progress display** — progress bar now appears only during active operations and uses smoother transitions.
+- **Added install progress events** — frontend now tracks installation progress in real time after the download finishes.
+- **Clearer status transitions** — the UI now shows `Running installer…` and `Starting application…` while NSIS is doing the actual install.
+- **Better user feedback** — the progress label updates without resetting the bar, so it’s obvious that the process is still continuing.

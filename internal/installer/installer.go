@@ -162,8 +162,15 @@ func (i *Installer) RunNsis(path string) error {
     return errors.New("empty path")
   }
 
+  if i.ctx != nil {
+    runtime.EventsEmit(i.ctx, "install:progress", "Running installer…")
+  }
+
   cmd := exec.Command(path, "/S")
   if err := cmd.Run(); err != nil {
+    if i.ctx != nil {
+      runtime.EventsEmit(i.ctx, "install:progress", "Installer failed")
+    }
     return err
   }
 
@@ -178,6 +185,10 @@ func (i *Installer) RunNsis(path string) error {
     "voidpresence",
     "Void Presence.exe",
   )
+
+  if i.ctx != nil {
+    runtime.EventsEmit(i.ctx, "install:progress", "Starting application…")
+  }
 
   return exec.Command(appPath).Start()
 }
