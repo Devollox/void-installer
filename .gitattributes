@@ -1,3 +1,6 @@
 frontend/wailsjs/**/* linguist-generated=true
-frontend/**/* linguist-documentation=true
+frontend/*.json linguist-generated=true
+frontend/*.json.md5 linguist-generated=true
+frontend/*.ts linguist-generated=true
+frontend/index.html linguist-generated=true
 build/**/* linguist-documentation=true
