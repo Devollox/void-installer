@@ -2,7 +2,7 @@
 
 ##
 
-Modern, high-performance installer for **Void Presence** built with **Go (Wails)** and **React**.
+Modern, high-performance **installer** for **Void Presence** built with **Go (Wails)** and **React**.
 
 ## Features
 
