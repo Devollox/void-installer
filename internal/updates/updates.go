@@ -31,7 +31,7 @@ type UpdateInfo struct {
 
 const (
   githubLatestURL = "https://api.github.com/repos/Devollox/void-installer/releases/latest"
-  currentVersion  = "v1.1.5"
+  currentVersion  = "v1.0.0"
 )
 
 type Updates struct{}

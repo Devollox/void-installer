@@ -1,7 +1,7 @@
-# Installer UX Improvements
+# CI/CD Automation & Version Sync
 
 ## Improvements
 
-- **Refined installer label styling** — the `.brand-installer-tag` is now smaller, uppercase, and spaced out for a cleaner eyebrow-style label above the heading.
-- **Improved visual hierarchy** — the label now feels lighter and less dominant, so the main title stays the focus.
-- **Better dark-theme balance** — the softer text color keeps the tag readable without drawing too much attention.
+- **Automated multi-file version synchronization** — added a unified build script that reads the version from `wails.json` and syncs it across the codebase before compilation.
+- **Synchronized frontend metadata** — version numbers are now automatically injected into `package.json` and `package-lock.json` (v3) to prevent lockfile desync warnings during dependency installation.
+- **Automated Go update constants** — the update manager package now receives the fresh version tag directly into `updates.go` right inside the GitHub Actions pipeline, eliminating manual tracking errors.
