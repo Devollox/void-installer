@@ -60,18 +60,30 @@ jobs:
         run: |
           wails build -clean -platform windows/amd64
 
-      - name: Rename installer file
+      - name: Rename installer file with version
         if: steps.check_release.outputs.exists == 'false'
+        id: rename_installer
         shell: bash
         run: |
-          mv "build/bin/Void Presence Installer.exe" "build/bin/Void.Presence.Installer.exe"
+          # github.ref_name = v3.0.2 → VERSION=3.0.2
+          VERSION="${GITHUB_REF_NAME#v}"
+          SRC="build/bin/Void Presence Installer.exe"
+          DEST="build/bin/Void.Presence.Installer.${VERSION}.exe"
+
+          echo "Version: ${VERSION}"
+          echo "Source:  ${SRC}"
+          echo "Dest:    ${DEST}"
+
+          mv "${SRC}" "${DEST}"
+
+          echo "installer_path=${DEST}" >> "$GITHUB_OUTPUT"
 
       - name: Upload Release
         if: steps.check_release.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/bin/Void.Presence.Installer.exe
+            build/bin/Void.Presence.Installer.${{ github.ref_name#v }}.exe
           body_path: RELEASE_NOTES.md
           tag_name: ${{ github.ref_name }}
           make_latest: true
