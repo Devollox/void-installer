@@ -162,6 +162,13 @@ func (i *Installer) RunNsis(path string) error {
     return errors.New("empty path")
   }
 
+  kill := exec.Command("taskkill", "/IM", "Void Presence.exe", "/T", "/F")
+  kill.SysProcAttr = &syscall.SysProcAttr{
+    HideWindow:    true,
+    CreationFlags: 0x08000000,
+  }
+  _ = kill.Run()
+
   if i.ctx != nil {
     runtime.EventsEmit(i.ctx, "install:progress", "Running installer…")
   }
