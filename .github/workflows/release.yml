@@ -73,7 +73,7 @@ jobs:
         if: steps.check_release.outputs.exists == 'false'
         shell: bash
         run: |
-          SRC="build/bin/Void Presence Installer.exe"
+          SRC="build/bin/Void.Presence.Installer.exe"
           DEST="build/bin/Void.Presence.Installer.${VERSION}.exe"
 
           echo "Source:  ${SRC}"

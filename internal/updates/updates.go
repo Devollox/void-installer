@@ -1,24 +1,20 @@
 package updates
 
 import (
+  "bytes"
   "encoding/json"
   "errors"
   "fmt"
   "io"
   "net/http"
-  "os"
   "strings"
   "time"
 )
 
-type GitHubAsset struct {
-  Name               string `json:"name"`
-  BrowserDownloadURL string `json:"browser_download_url"`
-}
-
-type GitHubRelease struct {
-  TagName string        `json:"tag_name"`
-  Assets  []GitHubAsset `json:"assets"`
+type ApiLatestInfo struct {
+  Tag        string `json:"tag"`
+  AssetName  string `json:"assetName"`
+  DownloadURL string `json:"downloadUrl"`
 }
 
 type UpdateInfo struct {
@@ -30,8 +26,8 @@ type UpdateInfo struct {
 }
 
 const (
-  githubLatestURL = "https://api.github.com/repos/Devollox/void-installer/releases/latest"
-  currentVersion  = "v1.0.0"
+  githubReleasesURL = "https://api.voidpresence.site/v1/github/releases"
+  currentVersion    = "v1.0.0"
 )
 
 type Updates struct{}
@@ -51,23 +47,26 @@ func normalizeTag(tag string) string {
   return "v" + t
 }
 
-func (u *Updates) GetLatestInstallerRelease() (*GitHubRelease, error) {
+func (u *Updates) GetLatestInstallerRelease() (*ApiLatestInfo, error) {
   client := &http.Client{
     Timeout: 10 * time.Second,
   }
 
-  req, err := http.NewRequest(http.MethodGet, githubLatestURL, nil)
+  payload := map[string]string{
+    "app": "void-installer",
+  }
+  bodyBytes, err := json.Marshal(payload)
   if err != nil {
     return nil, err
   }
 
-  req.Header.Set("Accept", "application/vnd.github+json")
-  req.Header.Set("User-Agent", "void-installer-updater")
-
-  token := os.Getenv("GITHUB_TOKEN")
-  if token != "" {
-    req.Header.Set("Authorization", "Bearer "+token)
+  req, err := http.NewRequest(http.MethodPost, githubReleasesURL, bytes.NewReader(bodyBytes))
+  if err != nil {
+    return nil, err
   }
+
+  req.Header.Set("User-Agent", "void-installer-updater")
+  req.Header.Set("Content-Type", "application/json")
 
   resp, err := client.Do(req)
   if err != nil {
@@ -76,7 +75,8 @@ func (u *Updates) GetLatestInstallerRelease() (*GitHubRelease, error) {
   defer resp.Body.Close()
 
   if resp.StatusCode >= 400 {
-    return nil, fmt.Errorf("github api error: %s", resp.Status)
+    body, _ := io.ReadAll(resp.Body)
+    return nil, fmt.Errorf("api error: %s body: %s", resp.Status, string(body))
   }
 
   body, err := io.ReadAll(resp.Body)
@@ -84,16 +84,16 @@ func (u *Updates) GetLatestInstallerRelease() (*GitHubRelease, error) {
     return nil, err
   }
 
-  var release GitHubRelease
-  if err := json.Unmarshal(body, &release); err != nil {
+  var info ApiLatestInfo
+  if err := json.Unmarshal(body, &info); err != nil {
     return nil, err
   }
 
-  if release.TagName == "" {
-    return nil, errors.New("empty tag name from GitHub")
+  if info.Tag == "" {
+    return nil, errors.New("empty tag from api")
   }
 
-  return &release, nil
+  return &info, nil
 }
 
 func (u *Updates) CheckInstallerUpdate() (*UpdateInfo, error) {
@@ -109,23 +109,15 @@ func (u *Updates) CheckInstallerUpdate() (*UpdateInfo, error) {
   }
 
   current := normalizeTag(currentVersion)
-  latest := normalizeTag(rel.TagName)
+  latest := normalizeTag(rel.Tag)
 
   hasUpdate := current != "" && latest != "" && current != latest
-
-  var assetName string
-  var assetURL string
-
-  if len(rel.Assets) > 0 {
-    assetName = rel.Assets[0].Name
-    assetURL = rel.Assets[0].BrowserDownloadURL
-  }
 
   return &UpdateInfo{
     HasUpdate:      hasUpdate,
     CurrentVersion: current,
     LatestVersion:  latest,
-    AssetName:      assetName,
-    AssetURL:       assetURL,
+    AssetName:      rel.AssetName,
+    AssetURL:       rel.DownloadURL,
   }, nil
 }

@@ -4,4 +4,4 @@ import {updates} from '../models';
 
 export function CheckInstallerUpdate():Promise<updates.UpdateInfo>;
 
-export function GetLatestInstallerRelease():Promise<updates.GitHubRelease>;
+export function GetLatestInstallerRelease():Promise<updates.ApiLatestInfo>;
