@@ -5,6 +5,7 @@ import (
   "context"
   "encoding/json"
   "errors"
+  "fmt"
   "io"
   "net/http"
   "os"
@@ -57,7 +58,11 @@ func (i *Installer) GetLatestRelease() (*LatestReleaseInfo, error) {
   req.Header.Set("User-Agent", "VoidPresenceInstaller/1.0")
   req.Header.Set("Content-Type", "application/json")
 
-  resp, err := http.DefaultClient.Do(req)
+  client := &http.Client{
+    Timeout: 30 * time.Second,
+  }
+
+  resp, err := client.Do(req)
   if err != nil {
     return nil, err
   }
@@ -99,7 +104,11 @@ func (i *Installer) DownloadInstaller(url string) (*DownloadResult, error) {
   }
   req.Header.Set("User-Agent", "VoidPresenceInstaller/1.0")
 
-  resp, err := http.DefaultClient.Do(req)
+  client := &http.Client{
+    Timeout: 120 * time.Second,
+  }
+
+  resp, err := client.Do(req)
   if err != nil {
     return nil, err
   }
@@ -109,14 +118,13 @@ func (i *Installer) DownloadInstaller(url string) (*DownloadResult, error) {
     return nil, errors.New("bad status: " + resp.Status)
   }
 
-  tmpDir := os.TempDir()
-  destPath := filepath.Join(tmpDir, "Void.Presence.Setup.exe")
-
-  out, err := os.Create(destPath)
+  destFile, err := os.CreateTemp(os.TempDir(), "Void.Presence.Setup.*.exe")
   if err != nil {
     return nil, err
   }
-  defer out.Close()
+  defer destFile.Close()
+
+  destPath := destFile.Name()
 
   total := resp.ContentLength
   var downloaded int64 = 0
@@ -126,7 +134,7 @@ func (i *Installer) DownloadInstaller(url string) (*DownloadResult, error) {
   for {
     n, readErr := resp.Body.Read(buf)
     if n > 0 {
-      written, writeErr := out.Write(buf[:n])
+      written, writeErr := destFile.Write(buf[:n])
       if writeErr != nil {
         return nil, writeErr
       }
@@ -164,7 +172,7 @@ func (i *Installer) RunNsis(path string) error {
 
   kill := exec.Command("taskkill", "/IM", "Void Presence.exe", "/T", "/F")
   kill.SysProcAttr = &syscall.SysProcAttr{
-    HideWindow:    true,
+    HideWindow:   true,
     CreationFlags: 0x08000000,
   }
   _ = kill.Run()
@@ -175,7 +183,7 @@ func (i *Installer) RunNsis(path string) error {
 
   cmd := exec.Command(path, "/S")
   cmd.SysProcAttr = &syscall.SysProcAttr{
-    HideWindow:    true,
+    HideWindow:   true,
     CreationFlags: 0x08000000,
   }
 
@@ -202,13 +210,21 @@ func (i *Installer) RunNsis(path string) error {
     runtime.EventsEmit(i.ctx, "install:progress", "Starting application…")
   }
 
+  if _, err := os.Stat(appPath); err != nil {
+    return fmt.Errorf("app exe not found at %s: %w", appPath, err)
+  }
+
   appCmd := exec.Command(appPath)
   appCmd.SysProcAttr = &syscall.SysProcAttr{
-    HideWindow:    true,
+    HideWindow:   true,
     CreationFlags: 0x08000000,
   }
 
-  return appCmd.Start()
+  if err := appCmd.Start(); err != nil {
+    return err
+  }
+
+  return nil
 }
 
 func (i *Installer) RunInstallerUpdater(path string) error {
@@ -218,7 +234,7 @@ func (i *Installer) RunInstallerUpdater(path string) error {
 
   cmd := exec.Command(path)
   cmd.SysProcAttr = &syscall.SysProcAttr{
-    HideWindow:    true,
+    HideWindow:   true,
     CreationFlags: 0x08000000,
   }
 
@@ -227,7 +243,9 @@ func (i *Installer) RunInstallerUpdater(path string) error {
   }
 
   go func() {
-    runtime.Quit(i.ctx)
+    if i.ctx != nil {
+      runtime.Quit(i.ctx)
+    }
   }()
 
   return nil
@@ -240,21 +258,26 @@ func (i *Installer) RemoveVoidPresence(path string) error {
 
   kill := exec.Command("taskkill", "/IM", "Void Presence.exe", "/T", "/F")
   kill.SysProcAttr = &syscall.SysProcAttr{
-    HideWindow:    true,
+    HideWindow:   true,
     CreationFlags: 0x08000000,
   }
   _ = kill.Run()
 
   uninstallPath := filepath.Join(path, "Uninstall Void Presence.exe")
+
   if _, err := os.Stat(uninstallPath); err != nil {
     return err
   }
 
   cmd := exec.Command(uninstallPath, "/S")
   cmd.SysProcAttr = &syscall.SysProcAttr{
-    HideWindow:    true,
+    HideWindow:   true,
     CreationFlags: 0x08000000,
   }
 
-  return cmd.Run()
+  if err := cmd.Run(); err != nil {
+    return err
+  }
+
+  return nil
 }

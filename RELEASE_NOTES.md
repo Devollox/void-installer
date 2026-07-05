@@ -1,5 +1,5 @@
-# Process-Safe Installer Update
+# Safer In-Place Client Updates
 
-## Improvements
+## Improved
 
-- **Force-close running client before update** — the installer now terminates all running `Void Presence.exe` processes via `taskkill` before launching the NSIS installer, preventing file lock errors and half-applied updates.
+- **Force-closed the running client before update** — the installer now terminates any active `Void Presence.exe` processes before launching the NSIS installer, reducing file lock issues and preventing partially applied updates.
