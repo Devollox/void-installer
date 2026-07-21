@@ -34,15 +34,12 @@ jobs:
           - platform: windows
             os: windows-latest
             wails_platform: windows/amd64
-            ext: .exe
           - platform: macos
             os: macos-latest
             wails_platform: darwin/universal
-            ext: ''
           - platform: linux
             os: ubuntu-22.04
             wails_platform: linux/amd64
-            ext: ''
 
     runs-on: ${{ matrix.os }}
 
@@ -102,34 +99,53 @@ jobs:
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Rename (Windows)
+      - name: Prepare Windows Setup
         if: matrix.platform == 'windows'
         shell: bash
         run: |
           mv "build/bin/Void.Presence.Installer.exe" \
-             "build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.exe"
+             "build/bin/Void.Presence.Setup.${{ steps.ver.outputs.version }}.exe"
 
-      - name: Rename (macOS)
+      - name: Prepare macOS Setup
         if: matrix.platform == 'macos'
         run: |
           cd build/bin
-          zip -r "Void.Presence.Installer.${{ steps.ver.outputs.version }}.macos.zip" \
-            "Void Presence Installer.app"
+          zip -r "Void Presence.app.zip" "Void Presence Installer.app"
+          cd build/bin
+          hdiutil create -volname "Void Presence" \
+            -srcfolder "Void Presence Installer.app" \
+            -ov -format UDBZ "Void.Presence.Setup.${{ steps.ver.outputs.version }}.dmg"
           cd -
 
-      - name: Rename (Linux)
+      - name: Prepare Linux Setup
         if: matrix.platform == 'linux'
         shell: bash
         run: |
-          mv "build/bin/Void.Presence.Installer" \
-             "build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.linux"
-          chmod +x "build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.linux"
+          INSTALLER_BIN="build/bin/Void.Presence.Installer"
+          VERSION="${{ steps.ver.outputs.version }}"
+          mkdir -p pkg/void-presence/DEBIAN
+          mkdir -p pkg/void-presence/usr/bin
+          cp "$INSTALLER_BIN" "pkg/void-presence/usr/bin/void-presence"
+          chmod 755 "pkg/void-presence/usr/bin/void-presence"
+          cat > pkg/void-presence/DEBIAN/control <<EOF
+          Package: void-presence
+          Version: $VERSION
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: Devollox <dev@voidpresence.site>
+          Description: Void Presence Discord Rich Presence manager
+          EOF
+          dpkg-deb --build pkg/void-presence "build/bin/Void.Presence.Setup.${VERSION}.deb"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ matrix.platform }}
-          path: build/bin/Void.Presence.Installer*
+          path: |
+            build/bin/Void.Presence.Setup.*.exe
+            build/bin/Void.Presence.Setup.*.dmg
+            build/bin/Void.Presence.Setup.*.deb
           retention-days: 1
 
   release:
