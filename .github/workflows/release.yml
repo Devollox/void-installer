@@ -104,13 +104,13 @@ jobs:
         shell: bash
         run: |
           mv "build/bin/Void.Presence.Installer.exe" \
-             "build/bin/Void.Presence.Setup.${{ steps.ver.outputs.version }}.exe"
+             "build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.exe"
 
       - name: Prepare macOS Setup
         if: matrix.platform == 'macos'
         run: |
           APP_PATH="build/bin/Void Presence Installer.app"
-          DMG_PATH="build/bin/Void.Presence.Setup.${{ steps.ver.outputs.version }}.dmg"
+          DMG_PATH="build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.dmg"
           hdiutil create -volname "Void Presence" \
             -srcfolder "$APP_PATH" \
             -ov -format UDBZ "$DMG_PATH"
@@ -134,16 +134,16 @@ jobs:
           Maintainer: Devollox <dev@voidpresence.site>
           Description: Void Presence Discord Rich Presence manager
           EOF
-          dpkg-deb --build pkg/void-presence "build/bin/Void.Presence.Setup.${VERSION}.deb"
+          dpkg-deb --build pkg/void-presence "build/bin/Void.Presence.Installer.${VERSION}.deb"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ matrix.platform }}
           path: |
-            build/bin/Void.Presence.Setup.*.exe
-            build/bin/Void.Presence.Setup.*.dmg
-            build/bin/Void.Presence.Setup.*.deb
+            build/bin/Void.Presence.Installer.*.exe
+            build/bin/Void.Presence.Installer.*.dmg
+            build/bin/Void.Presence.Installer.*.deb
           retention-days: 1
 
   release:
