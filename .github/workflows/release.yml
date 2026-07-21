@@ -109,13 +109,11 @@ jobs:
       - name: Prepare macOS Setup
         if: matrix.platform == 'macos'
         run: |
-          cd build/bin
-          zip -r "Void Presence.app.zip" "Void Presence Installer.app"
-          cd build/bin
+          APP_PATH="build/bin/Void Presence Installer.app"
+          DMG_PATH="build/bin/Void.Presence.Setup.${{ steps.ver.outputs.version }}.dmg"
           hdiutil create -volname "Void Presence" \
-            -srcfolder "Void Presence Installer.app" \
-            -ov -format UDBZ "Void.Presence.Setup.${{ steps.ver.outputs.version }}.dmg"
-          cd -
+            -srcfolder "$APP_PATH" \
+            -ov -format UDBZ "$DMG_PATH"
 
       - name: Prepare Linux Setup
         if: matrix.platform == 'linux'
