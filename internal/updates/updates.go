@@ -7,6 +7,7 @@ import (
   "fmt"
   "io"
   "net/http"
+  "runtime"
   "strings"
   "time"
 )
@@ -26,7 +27,7 @@ type UpdateInfo struct {
 }
 
 const (
-  githubReleasesURL = "https://api.voidpresence.site/v1/github/releases"
+  githubReleasesURL = "https://api.voidpresence.site/v2/github/releases"
   currentVersion    = "v1.0.0"
 )
 
@@ -52,8 +53,17 @@ func (u *Updates) GetLatestInstallerRelease() (*ApiLatestInfo, error) {
     Timeout: 10 * time.Second,
   }
 
+  osPlatform := "windows"
+  switch runtime.GOOS {
+  case "darwin":
+    osPlatform = "macos"
+  case "linux":
+    osPlatform = "linux"
+  }
+
   payload := map[string]string{
-    "app": "void-installer",
+    "app":      "void-installer",
+    "platform": osPlatform,
   }
   bodyBytes, err := json.Marshal(payload)
   if err != nil {

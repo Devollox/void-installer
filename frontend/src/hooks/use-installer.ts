@@ -16,6 +16,7 @@ export type Mode = 'install' | 'remove'
 export interface LatestReleaseInfo {
 	tag: string
 	assetName: string
+	downloadUrl: string
 }
 
 export interface UpdateInfo {
@@ -77,8 +78,7 @@ export function useInstaller() {
 			const info: LatestReleaseInfo = await GetLatestRelease()
 			setReleaseVersion(info.tag || 'unknown')
 			setAssetName(info.assetName)
-			const url = `https://github.com/Devollox/void-presence/releases/download/${info.tag}/${info.assetName}`
-			setAssetUrl(url)
+			setAssetUrl(info.downloadUrl)
 		} catch {
 			setReleaseVersion('error')
 			setStatusLabel('error')

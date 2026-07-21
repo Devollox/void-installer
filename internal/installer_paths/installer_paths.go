@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 type Paths struct {
@@ -23,6 +24,25 @@ type InstallPathInfo struct {
 }
 
 func (p *Paths) GetInstallPath() (*InstallPathInfo, error) {
+	switch runtime.GOOS {
+	case "windows":
+		return windowsInstallPath()
+	case "darwin":
+		return &InstallPathInfo{
+			InstallPath: "/Applications/Void Presence.app",
+		}, nil
+	case "linux":
+		return &InstallPathInfo{
+			InstallPath: "/usr/bin",
+		}, nil
+	default:
+		return &InstallPathInfo{
+			InstallPath: filepath.Join(os.TempDir(), "voidpresence"),
+		}, nil
+	}
+}
+
+func windowsInstallPath() (*InstallPathInfo, error) {
 	localAppData := os.Getenv("LOCALAPPDATA")
 	if localAppData == "" {
 		return &InstallPathInfo{
@@ -30,13 +50,7 @@ func (p *Paths) GetInstallPath() (*InstallPathInfo, error) {
 		}, nil
 	}
 
-	installPath := filepath.Join(
-		localAppData,
-		"Programs",
-		"voidpresence",
-	)
-
 	return &InstallPathInfo{
-		InstallPath: installPath,
+		InstallPath: filepath.Join(localAppData, "Programs", "voidpresence"),
 	}, nil
 }

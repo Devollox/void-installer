@@ -6,97 +6,155 @@ on:
       - 'v*'
 
 jobs:
-  release:
-    runs-on: windows-latest
-
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      exists: ${{ steps.check.outputs.exists }}
     steps:
-      - name: Check if release already exists for this tag
-        id: check_release
-        shell: bash
+      - name: Check if release already exists
+        id: check
         run: |
-          set -e
-          TAG="${{ github.ref_name }}"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+          if gh release view "${{ github.ref_name }}" \
+               --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "exists=true"  >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout code
-        if: steps.check_release.outputs.exists == 'false'
-        uses: actions/checkout@v4
+  build:
+    needs: preflight
+    if: needs.preflight.outputs.exists == 'false'
 
-      - name: Run version synchronization
-        if: steps.check_release.outputs.exists == 'false'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows
+            os: windows-latest
+            wails_platform: windows/amd64
+            ext: .exe
+          - platform: macos
+            os: macos-latest
+            wails_platform: darwin/universal
+            ext: ''
+          - platform: linux
+            os: ubuntu-latest
+            wails_platform: linux/amd64
+            ext: ''
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync version
         run: node scripts/sync-version.js
 
-      - name: Setup Go
-        if: steps.check_release.outputs.exists == 'false'
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
-      - name: Setup Node.js
-        if: steps.check_release.outputs.exists == 'false'
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: npm
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install frontend dependencies
-        if: steps.check_release.outputs.exists == 'false'
         working-directory: frontend
         run: npm ci
 
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            libgtk-3-dev \
+            libwebkit2gtk-4.0-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            gcc \
+            pkg-config
+
       - name: Install Wails CLI
-        if: steps.check_release.outputs.exists == 'false'
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-      - name: Build Wails app (Windows)
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          wails build -clean -platform windows/amd64
+      - name: Build (Windows)
+        if: matrix.platform == 'windows'
+        shell: bash
+        run: wails build -clean -platform ${{ matrix.wails_platform }}
 
-      - name: Extract version from tag
-        if: steps.check_release.outputs.exists == 'false'
-        id: extract_version
+      - name: Build (macOS)
+        if: matrix.platform == 'macos'
+        run: wails build -clean -platform ${{ matrix.wails_platform }}
+
+      - name: Build (Linux)
+        if: matrix.platform == 'linux'
+        run: wails build -clean -platform ${{ matrix.wails_platform }}
+
+      - name: Extract version
+        id: ver
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Rename installer file
-        if: steps.check_release.outputs.exists == 'false'
+      - name: Rename (Windows)
+        if: matrix.platform == 'windows'
         shell: bash
         run: |
-          SRC="build/bin/Void.Presence.Installer.exe"
-          DEST="build/bin/Void.Presence.Installer.${VERSION}.exe"
+          mv "build/bin/Void.Presence.Installer.exe" \
+             "build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.exe"
 
-          echo "Source:  ${SRC}"
-          echo "Dest:    ${DEST}"
+      - name: Rename (macOS)
+        if: matrix.platform == 'macos'
+        shell: bash
+        run: |
 
-          mv "${SRC}" "${DEST}"
+          cd build/bin
+          zip -r "Void.Presence.Installer.${{ steps.ver.outputs.version }}.macos.zip" \
+            "Void Presence Installer.app"
+          cd -
 
-      - name: Upload Release
-        if: steps.check_release.outputs.exists == 'false'
+      - name: Rename (Linux)
+        if: matrix.platform == 'linux'
+        shell: bash
+        run: |
+          mv "build/bin/Void.Presence.Installer" \
+             "build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.linux"
+          chmod +x "build/bin/Void.Presence.Installer.${{ steps.ver.outputs.version }}.linux"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.platform }}
+          path: build/bin/Void.Presence.Installer*
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Show collected artifacts
+        run: find dist -type f | sort
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            build/bin/Void.Presence.Installer.${{ env.VERSION }}.exe
-          body_path: RELEASE_NOTES.md
           tag_name: ${{ github.ref_name }}
+          body_path: RELEASE_NOTES.md
           make_latest: true
           overwrite_files: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update release description from RELEASE_NOTES.md
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          gh release edit ${{ github.ref_name }} --notes-file RELEASE_NOTES.md
+          files: dist/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
