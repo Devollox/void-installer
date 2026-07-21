@@ -15,7 +15,7 @@ jobs:
         id: check
         run: |
           if gh release view "${{ github.ref_name }}" \
-               --repo "${{ github.repository }}" >/dev/null 2>&1; then
+                 --repo "${{ github.repository }}" >/dev/null 2>&1; then
             echo "exists=true"  >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
@@ -40,7 +40,7 @@ jobs:
             wails_platform: darwin/universal
             ext: ''
           - platform: linux
-            os: ubuntu-latest
+            os: ubuntu-22.04
             wails_platform: linux/amd64
             ext: ''
 
@@ -111,9 +111,7 @@ jobs:
 
       - name: Rename (macOS)
         if: matrix.platform == 'macos'
-        shell: bash
         run: |
-
           cd build/bin
           zip -r "Void.Presence.Installer.${{ steps.ver.outputs.version }}.macos.zip" \
             "Void Presence Installer.app"
