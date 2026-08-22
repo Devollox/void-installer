@@ -1,15 +1,15 @@
 package updates
 
 import (
-  "bytes"
-  "encoding/json"
-  "errors"
-  "fmt"
-  "io"
-  "net/http"
-  "runtime"
-  "strings"
-  "time"
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
+	"runtime"
+	"strings"
+	"time"
 )
 
 type ApiLatestInfo struct {
@@ -27,7 +27,7 @@ type UpdateInfo struct {
 }
 
 const (
-  githubReleasesURL = "https://api.voidpresence.site/v2/github/releases"
+  githubReleasesURL = "https://api.voidpresence.com/v2/github/releases"
   currentVersion    = "v1.0.0"
 )
 

@@ -131,7 +131,7 @@ jobs:
           Section: utils
           Priority: optional
           Architecture: amd64
-          Maintainer: Devollox <dev@voidpresence.site>
+          Maintainer: Devollox <dev@voidpresence.com>
           Description: Void Presence Discord Rich Presence manager
           EOF
           dpkg-deb --build pkg/void-presence "build/bin/Void.Presence.Installer.${VERSION}.deb"

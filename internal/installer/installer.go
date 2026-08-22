@@ -35,7 +35,7 @@ type LatestReleaseInfo struct {
 	DownloadURL string `json:"downloadUrl"`
 }
 
-const githubReleasesURL = "https://api.voidpresence.site/v2/github/releases"
+const githubReleasesURL = "https://api.voidpresence.com/v2/github/releases"
 
 
 func platformAssetSuffix() string {
