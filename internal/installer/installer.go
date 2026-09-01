@@ -52,9 +52,9 @@ func platformAssetSuffix() string {
 func tempInstallerPattern() string {
 	switch runtime.GOOS {
 	case "darwin":
-		return "Void.Presence.*.dmg"
+		return "Void.Presence.Setup.*.dmg"
 	case "linux":
-		return "Void.Presence.*.deb"
+		return "Void.Presence.Setup.*.deb"
 	default:
 		return "Void.Presence.Setup.*.exe"
 	}
