@@ -1,7 +1,9 @@
-# New Domain
+# Installer Pattern Update
 
-## Infrastructure
+## Changed
 
-- **New primary domain** — Void Presence has moved to [`voidpresence.com`](https://voidpresence.com).
-- **Legacy-domain redirects** — requests to `voidpresence.site`, `www.voidpresence.site`, and `api.voidpresence.site` now permanently redirect to their corresponding `.com` endpoints, preserving existing links and API access.
-- **Dedicated API domain** — the API is now available at [`api.voidpresence.com`](https://api.voidpresence.com).
+- **Installer filename pattern for macOS and Linux** — updated `tempInstallerPattern()` to align with the new void‑presence release naming:
+  - macOS: pattern changed from `Void.Presence.*.dmg` to `Void.Presence.Setup.*.dmg`.
+  - Linux: pattern changed from `Void.Presence.*.deb` to `Void.Presence.Setup.*.deb`.
+  - Windows: pattern remains `Void.Presence.Setup.*.exe`.
+    This ensures the updater correctly selects the embedded installer for each platform using the unified `Setup.` prefix across all OS builds.
